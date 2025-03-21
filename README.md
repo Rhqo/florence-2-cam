@@ -37,7 +37,7 @@ pip install opencv-python timm einops flash_attn transformers
 
 ### Openai API Key 입력
 ```bash
-export OPENAI_API_KEY='sk-proj-...'
+export OPENAI_API_KEY=<sk-proj-...>
 ```
 
 ImportError 발생 시
