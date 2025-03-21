@@ -15,5 +15,5 @@ Transformers version: 4.44.0
     timm==1.0.8
 ```
 ```bash
-pip install python-opencv timm einops flash_attn transformers
+pip install opencv-python timm einops flash_attn transformers
 ```
