@@ -1,17 +1,17 @@
 # W/O Camera pipeline
 
-- demo_with_gpt4.py 
+- **demo_with_gpt4.py**
     - **Florence-2** `<Captioning>` ⇒ `<Visual Grounding>` ⇒ **GPT-4o** `<Situation Understanding>`
     - image directory -> result directory
 
 # W/ Camera pipeline
-- demo.py
+- **demo.py**
     - **Florence-2** `<Captioning>` ⇒ `<Visual Grounding>`
 
-- demo_fl2+gpt.py
+- **demo_fl2+gpt.py**
     - **Florence-2** `<Captioning>` ⇒ `<Visual Grounding>` ⇒ **GPT-4o** `<Situation Understanding>`
 
-- demo_only_gpt.py
+- **demo_only_gpt.py**
     - **GPT-4o** `<Situation Understanding>`, `<OV-OD>` 
 
 
