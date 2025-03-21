@@ -17,3 +17,16 @@ Transformers version: 4.44.0
 ```bash
 pip install opencv-python timm einops flash_attn transformers
 ```
+
+### Openai API Key 입력
+```bash
+export OPENAI_API_KEY='sk-proj-...'
+```
+
+ImportError 발생 시
+``` bash
+# ImportError: libGL.so.1: cannot open shared object file: No such file or directory
+apt-get install -y libgl1-mesa-glx libglib2.0-0
+# pip install opencv-python timm einops flash_attn transformers
+```
+
