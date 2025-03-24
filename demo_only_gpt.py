@@ -5,6 +5,7 @@ from PIL import Image
 
 import matplotlib.pyplot as plt  
 import matplotlib.patches as patches
+import matplotlib.font_manager as fm
 
 import random
 import re
@@ -25,6 +26,11 @@ device = "cuda:0" if torch.cuda.is_available() else "cpu"
 torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
 
 client = OpenAI()
+
+font_path = './NanumGothic.ttf'
+fontprop = fm.FontProperties(fname=font_path)
+plt.rcParams['font.family'] = fontprop.get_name()
+
 
 def plot_bbox(
     image: np.ndarray,
@@ -72,13 +78,12 @@ def plot_bbox(
             text,
             fontsize=font_scale * 10,
             color=text_color_rgb,
-            bbox=dict(facecolor=color_rgb, alpha=0.5, pad=text_padding)
+            bbox=dict(facecolor=color_rgb, alpha=0.5, pad=text_padding),
+            fontproperties=fontprop
         )
 
-    # Remove axis ticks and labels
     ax.axis('off')
 
-    # Draw the canvas and retrieve the image as RGBA buffer
     fig.canvas.draw()
     img = np.frombuffer(fig.canvas.buffer_rgba(), dtype=np.uint8)
     img = img.reshape(fig.canvas.get_width_height()[::-1] + (4,))
@@ -195,15 +200,14 @@ system_prompt = """이미지를 분석한 후 다음 두 가지를 분석해주�
 
                 위치 정보 답변 규칙:
                 - 물체의 위치는 반드시 다음 형식으로 제공: 물체명: [x_min, y_min, x_max, y_max]
-                - meat 처럼 범용적인 표현 대신, 구체적인 물체명 사용
-                - 물체는 영어로 작성
+                - 범용적인 표현 대신, 구체적인 물체명 사용
+                - 모든 답변은 한국어로 작성
                 - 물체가 여러 개인 경우 각 물체마다 한 줄에 작성
-
 
                 예시:
                 {situation}: 식당에서 밥을 먹는 상황
-                {location}: pizza: [100, 150, 200, 250]
-                            pasta: [300, 200, 500, 350]
+                {location}: 피자: [100, 150, 200, 250]
+                            파스타: [300, 200, 500, 350]
 
                 이 형식과 규칙을 엄격히 준수하여 응답을 작성해주세요."""
 
