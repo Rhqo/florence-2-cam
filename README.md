@@ -24,18 +24,33 @@
     - **GPT-4o** `<Situation Understanding>`, `<OV-OD>`
     - ```
       # 출력 예시
-      {situation}: 사무실에서 작업 중인 상황  
-      {location}: keyboard: [100, 200, 300, 250]  
-                  monitor1: [320, 150, 600, 300]  
-                  monitor2: [610, 150, 900, 300]  
-                  macbook: [200, 300, 400, 350]  
-                  smartphone: [400, 300, 450, 350]  
-                  cup: [470, 300, 510, 350]  
-                  box: [100, 250, 150, 300]  
-                  water_bottles: [600, 350, 700, 450]   (gpt: 5.1954s | total: 5.1957s)
+      {situation}: 라면과 만두를 먹으려는 상황
+      {location}: 라면: [50, 100, 300, 250]
+                  만두: [320, 150, 450, 220] (gpt: 3.0590s | total: 3.0593s)
       ...
       ```
+- **demo_fl2_region_prompt+gpt.py**
+    - **Florence-2** `<Region Proposal>` ⇒ **GPT-4o** `<Situation Understanding>`, `<Classification>`
+    - ```
+      #출력 예시
+      {situation}: 음식 사진을 촬영한 상황
+      {location}: 라멘: [0.3199999928474426, 0.23999999463558197, 639.0399780273438, 479.2799987792969]
+                  교자: [6.079999923706055, 93.83999633789062, 401.6000061035156, 419.7599792480469] (gpt: 4.4539s | total: 4.6295s)      
+      ```
 
+- **demo_frcnn_region_prompt+gpt.py**
+    - **Faster R-CNN** `<Region Proposal>` ⇒ **GPT-4o** `<Situation Understanding>`, `<Classification>`
+    - ```
+      #출력 예시
+      {situation}: 식당에서 음식을 먹는 상황
+      {location}: 객체 1: 돈코츠 라멘
+                  객체 2: 반숙 계란
+                  객체 3: 파 채소
+                  객체 4: 김치 소스
+                  객체 5: 식사용 젓가락
+                  객체 6: 일본식 만두
+                  객체 7: 물컵 (gpt: 5.0639s | total: 5.0954s)
+      ``` 
 
 # Prerequisite 
 ```bash 
