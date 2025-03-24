@@ -182,8 +182,8 @@ def main(system_prompt):
         pil_image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
         
         result = run_example(task_prompt='<REGION_PROPOSAL>', pil_image=pil_image)
-
         bbox = result['<REGION_PROPOSAL>']['bboxes']
+        bbox = sorted(bbox, key=lambda x: x[0])
         result_bbox = str(bbox)
 
         # GPT 처리
@@ -224,6 +224,7 @@ system_prompt = """유저의 입력 prompt로 당신은 2가지를 제공받습�
 
                     물체 정보 답변 규칙:
                     - 물체의 위치는 반드시 다음 형식으로 제공됨: [x_min, y_min, x_max, y_max]
+                    - x_min이 오름차순이 되도록 정렬되어 제공되므로, x_min이 작은 순서대로 작성
                     - '고기'처럼 범용적인 표현 대신, 구체적인 물체명 사용
                     - 모든 답변은 한국어로 작성
                     - 물체가 여러 개인 경우 각 물체마다 한 줄에 작성
