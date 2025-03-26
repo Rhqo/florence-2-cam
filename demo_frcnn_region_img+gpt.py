@@ -193,6 +193,7 @@ def process_gpt(system_prompt, user_prompt, input_image, rcnn_bboxes):
     ]
 
     # API
+    ### model = "gpt-4o" OR "gpt-4o-mini" ###
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=messages,
