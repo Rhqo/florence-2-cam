@@ -50,8 +50,11 @@ def run_region_proposal(pil_image: Image.Image) -> dict:
     
     boxes = predictions['boxes'].cpu().numpy()
     scores = predictions['scores'].cpu().numpy()
+
+    ### score threshold 적용 ###
+    # 숫자가 작을수록 더 많은 객체를 탐지합니다
+    threshold = 0.6
     
-    threshold = 0.6  # score 임계치
     final_boxes = []
     for box, score in zip(boxes, scores):
         if score >= threshold:
