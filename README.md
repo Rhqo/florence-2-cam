@@ -52,7 +52,7 @@
                   객체 7: 물컵 (gpt: 5.0639s | total: 5.0954s)
       ``` 
 
-- **main.py**
+- **main_gpt.py**
     - ![image](./image.png)
 
 # Prerequisite 
