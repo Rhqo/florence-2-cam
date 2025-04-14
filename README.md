@@ -55,6 +55,10 @@
 - **main_gpt.py**
     - ![image](./image.png)
 
+- **main_local.py**
+    - [main_local.py 설치 및 튜토리얼](./main_local-tutorial.md)
+
+
 # Prerequisite 
 ```bash 
 Python version: 3.11.9
