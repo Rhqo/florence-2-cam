@@ -1,0 +1,8 @@
+Args:
+  device: 'cuda:0' # cpu or cuda:0
+  cam_id: 0 # 0-webcam. 
+  buffer_size: 30
+  display_delay: 0
+  synchronous_mode: False
+  inference_fps: 100
+

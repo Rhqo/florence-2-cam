@@ -52,6 +52,9 @@
                   객체 7: 물컵 (gpt: 5.0639s | total: 5.0954s)
       ``` 
 
+- **main.py**
+    - ![image](./image.png)
+
 # Prerequisite 
 ```bash 
 Python version: 3.11.9
