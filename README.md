@@ -52,9 +52,25 @@
                   객체 7: 물컵 (gpt: 5.0639s | total: 5.0954s)
       ``` 
 
+## Using language model
+### GPT
 - **main_gpt.py**
-    - ![image](./image.png)
+    - ```
+      #출력 예시
+      {situation}: 소파에 누워 차를 마시며 휴식을 취하는 상태
+      {objects}: 머그컵, 손, 다리, 소파, 쿠션, 거실 의자형 소파(배경의 소파), 실내 식물
+      (gpt: 4.7550s | grounding: 0.1439s | total: 4.8989s)
+      ``` 
 
+- **main_gpt_stimulants.py**
+    - ```
+      #출력 예시
+      {situation}: 소파에 앉아 휴식을 취하며 차를 마시는 상태
+      {objects}: 커피 잔[!], 손, 다리, 소파, 담요, 화분, 거실 소파
+      (gpt: 6.3203s | grounding: 0.1688s | total: 6.4891s)
+      ``` 
+
+### local (gemma3)
 - **main_local.py**
     - [main_local.py 설치 및 튜토리얼](./main_local-tutorial.md)
 
@@ -76,7 +92,7 @@ Transformers version: 4.44.0
     timm==1.0.8
 ```
 ```bash
-pip install opencv-python timm einops flash_attn transformers
+pip install opencv-python timm einops transformers flash_attn
 ```
 
 ### Openai API Key 입력
@@ -89,5 +105,10 @@ ImportError 발생 시
 # ImportError: libGL.so.1: cannot open shared object file: No such file or directory
 apt-get install -y libgl1-mesa-glx libglib2.0-0
 # pip install opencv-python timm einops flash_attn transformers
+```
+
+xcb Error 발생 시
+```bash
+export QT_QPA_PLATFORM=xcb
 ```
 
