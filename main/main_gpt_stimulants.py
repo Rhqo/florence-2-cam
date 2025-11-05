@@ -42,6 +42,7 @@ plt.rcParams['font.family'] = fontprop.get_name()
 class ObjectAttribute(BaseModel):
     korean: str
     english: str
+    used_by: str  # "camera_wearer" or "other_person" or "background"
     is_stimulant: bool = False
 
 class FreeDetectionResponse(BaseModel):
@@ -51,61 +52,43 @@ class FreeDetectionResponse(BaseModel):
 # GPT용 시스템 프롬프트
 system_prompt = """이미지를 분석하여 다음을 제공하세요:
 
-1. situation: 전체 상황 (15자 이내, '~한 상황' 또는 '~하는 상태'로 끝남, 한국어)
-2. objects: 이미지에 보이는 주요 객체들을 한국어와 영어로 설명하고, 일주기 리듬 영향 여부 판단
+1. situation: 전체 상황 (15자 이내, '~한 상황'으로 끝남, 한국어)
+2. objects: 주요 객체 (한국어, 영어, used_by, is_stimulant)
 
-규칙:
-- 상황: 1인칭 시점, 사실적, 간결
-- **시각적 단서 기반 추론**: 이미지에서 명시적으로 보이는 단서(손 위치, 물체 배치, 자세 등)를 바탕으로 사용자가 직전/직후에 할 동작이나 의도를 추론하여 포함
-- 동작 표현: "~하는", "~하고 있는", "~하려는" 등 진행형/의도 표현 적극 사용
-- 근거 없는 추측 금지: 이미지에 보이지 않는 내용은 추론하지 않음
-- 객체: 구체적인 명사 (예: '고기' 대신 '삼겹살', '음료' 대신 '콜라')
-- 보이는 주요 객체만 나열 (3-10개 정도)
-- 각 객체는 한국어와 영어를 모두 제공
-- 영어는 간단하고 명확한 단어 사용 (예: "monitor", "keyboard", "mouse")
+**중요: 이 이미지는 카메라 착용자의 1인칭 시점입니다.**
 
-**is_stimulant 판단 기준** (일주기 리듬에 영향을 줄 수 있는 자극/방해 요소):
-- True로 설정해야 하는 객체:
-  * 카페인 음료: 커피, 에너지 드링크, 녹차, 홍차 등
-  * 화면/디스플레이: TV, 모니터, 컴퓨터, 노트북, 태블릿, 휴대폰 (블루라이트)
-  * 야식/음식: 라면, 치킨, 피자 등 늦은 시간 섭취 가능한 음식
-  * 알코올: 맥주, 소주, 와인 등 술
-  * 밝은 조명: 형광등, LED 조명 (강한 빛)
-  * 담배/전자담배
-- False로 설정해야 하는 객체:
-  * 가구: 소파, 침대, 책상, 의자 등
-  * 일반 물건: 쿠션, 책, 펜 등
-  * 카페인 없는 음료: 물, 우유, 디카페인 음료
-  * 자연광이나 간접 조명
+각 객체마다 다음을 판단:
+- korean: 객체 이름 (한국어)
+- english: 객체 이름 (영어)
+- used_by: 누가 사용/접근하는가?
+  * "camera_wearer": 카메라 착용자가 직접 사용 (손에 들고 있거나, 바로 앞에서 사용 중)
+  * "other_person": 다른 사람이 사용 (다른 사람 손에 있거나, 다른 사람이 접근 중)
+  * "background": 배경에 있음 (아무도 사용하지 않음)
+- is_stimulant: 일주기 리듬 영향 요소인가?
+  * 커피, 에너지드링크, 모니터, 휴대폰, TV, 음식, 술, 담배 등 → true
+  * 가구, 일반 물건 → false
 
-예시:
-{
-    "situation": "소파에 누워서 커피를 마시는 상태",
-    "objects": [
-        {"korean": "커피", "english": "coffee", "is_stimulant": true},
-        {"korean": "소파", "english": "sofa", "is_stimulant": false},
-        {"korean": "쿠션", "english": "cushion", "is_stimulant": false}
-    ]
-}
-{
-    "situation": "책상에 앉아 작업하는 상황",
-    "objects": [
-        {"korean": "키보드", "english": "keyboard", "is_stimulant": false},
-        {"korean": "모니터", "english": "monitor", "is_stimulant": true},
-        {"korean": "커피", "english": "coffee", "is_stimulant": true},
-        {"korean": "휴대폰", "english": "smartphone", "is_stimulant": true}
-    ]
-}
-{
-    "situation": "침대에 누워 TV를 보는 상태",
-    "objects": [
-        {"korean": "TV", "english": "TV", "is_stimulant": true},
-        {"korean": "침대", "english": "bed", "is_stimulant": false},
-        {"korean": "리모컨", "english": "remote control", "is_stimulant": false}
-    ]
-}"""
+**중요: is_stimulant=true는 used_by="camera_wearer"인 경우에만 의미가 있습니다.**
 
-user_prompt = "이 이미지에서 보이는 상황과 주요 객체들을 설명해주세요."
+예시 1 (내가 커피를 마시는 중):
+{"situation": "커피를 마시는 상태", "objects": [
+    {"korean": "커피", "english": "coffee", "used_by": "camera_wearer", "is_stimulant": true},
+    {"korean": "소파", "english": "sofa", "used_by": "background", "is_stimulant": false}
+]}
+
+예시 2 (내가 모니터로 작업 중):
+{"situation": "책상에서 작업하는 상태", "objects": [
+    {"korean": "모니터", "english": "monitor", "used_by": "camera_wearer", "is_stimulant": true},
+    {"korean": "키보드", "english": "keyboard", "used_by": "camera_wearer", "is_stimulant": false}
+]}
+
+예시 3 (다른 사람이 커피 마시는 것을 보는 중):
+{"situation": "다른 사람을 보는 상황", "objects": [
+    {"korean": "커피", "english": "coffee", "used_by": "other_person", "is_stimulant": false},
+    {"korean": "테이블", "english": "table", "used_by": "background", "is_stimulant": false}
+]}"""
+
+user_prompt = "이 이미지에서 **카메라 착용자(나)가 직접 사용하고 있는** 객체들과 상황을 설명해주세요. 다른 사람이 사용하는 것은 제외하세요."
 
 # 결과 저장 dict
 detection_results = {
@@ -215,10 +198,20 @@ def process_gpt(frame):
     situation = parsed_response.situation
     object_pairs = parsed_response.objects
 
-    # 한국어, 영어, is_stimulant 분리
-    korean_descriptions = [obj.korean for obj in object_pairs]
-    english_descriptions = [obj.english for obj in object_pairs]
-    is_stimulants = [obj.is_stimulant for obj in object_pairs]
+    # Post-processing: used_by가 "camera_wearer"가 아니면 is_stimulant를 False로 강제
+    korean_descriptions = []
+    english_descriptions = []
+    is_stimulants = []
+
+    for obj in object_pairs:
+        korean_descriptions.append(obj.korean)
+        english_descriptions.append(obj.english)
+
+        # 카메라 착용자가 사용하는 경우에만 is_stimulant 유지, 그 외는 False
+        if obj.used_by == "camera_wearer":
+            is_stimulants.append(obj.is_stimulant)
+        else:
+            is_stimulants.append(False)
 
     # 응답 요약 (각성제는 [!] 표시)
     obj_display = [f"{k}[!]" if stim else k for k, stim in zip(korean_descriptions, is_stimulants)]
